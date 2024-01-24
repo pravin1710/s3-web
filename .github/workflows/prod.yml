@@ -28,3 +28,4 @@ jobs:
       - name: Upload File to S3
         run: |
           aws s3 cp pravin1710/front-end-web-dev-code-examples s3://every-065408/
+          exit 1
