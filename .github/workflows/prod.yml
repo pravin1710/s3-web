@@ -1,41 +1,25 @@
-name: Deploy Frontend to S3 and Invalidate CloudFront Cache
+name: Upload to S3
 
 on:
   push:
     branches:
-      - master
-
-  workflow_dispatch:
+      - main
 
 jobs:
-  deploy:
+  upload:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with: 
-          node-version: 16.x
-
-      - name: Install Dependencies
-        run: npm install --force
-
-      - name: Build
-        run: npm run build
-
-      - name: Configure AWS Credentials
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
 
-      - name: Upload to S3
-        run: aws s3 sync build s3://every-065408
-
-      - name: Invalidate CloudFront Cache
+      - name: Upload File to S3
         run: |
-          aws cloudfront create-invalidation --distribution-id https://d1yme5uzqaglf7.cloudfront.net --paths "/*"
+          aws s3 cp pravin1710/front-end-web-dev-code-examples s3://every-065408/
